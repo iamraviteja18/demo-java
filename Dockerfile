@@ -11,7 +11,11 @@ RUN apt-get update && \
   rm -rf /var/lib/apt/lists/* && apt-get clean && apt-get purge
 
 RUN echo "export JAVA_OPTS=\"-Dapp.env=staging\"" > /usr/local/tomcat/bin/setenv.sh
+FROM maven:3.6.0-jdk-11-slim AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
 RUN mvn -f /home/app/pom.xml clean package
+
 COPY target/demo.war /usr/local/tomcat/webapps/demo.war
 
 EXPOSE 8080
